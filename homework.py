@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Optional
 
 
 @dataclass
@@ -133,7 +134,7 @@ class Swimming(Training):
                 * self.COEFFICIENT_2 * self.weight * self.duration)
 
 
-def read_package(workout_type: str, data: list[int]) -> (Training | str):
+def read_package(workout_type: str, data: list[int]) -> Optional[Training]:
     """Прочитать данные полученные от датчиков."""
     training_classes: dict[str: Training] = {
         'SWM': Swimming,
@@ -141,7 +142,7 @@ def read_package(workout_type: str, data: list[int]) -> (Training | str):
         'WLK': SportsWalking
     }
     if workout_type not in training_classes:
-        return "Неизвестный вид тренировки"
+        return None
     return training_classes[workout_type](*data)
 
 
