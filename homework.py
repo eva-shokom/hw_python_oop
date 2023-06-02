@@ -1,26 +1,28 @@
+from dataclasses import dataclass
+
+
+@dataclass
 class InfoMessage:
     """Информационное сообщение о тренировке."""
+    training_type: str
+    duration: float
+    distance: float
+    speed: float
+    calories: float
 
-    def __init__(self,
-                 training_type: str,
-                 duration: float,
-                 distance: float,
-                 speed: float,
-                 calories: float
-                 ) -> None:
-        self.training_type = training_type
-        self.duration = duration
-        self.distance = distance
-        self.speed = speed
-        self.calories = calories
+    MESSAGE = ('Тип тренировки: {0}; '
+               'Длительность: {1:.3f} ч.; '
+               'Дистанция: {2:.3f} км; '
+               'Ср. скорость: {3:.3f} км/ч; '
+               'Потрачено ккал: {4:.3f}.')
 
     def get_message(self) -> str:
         "Вернуть сообщение с данными о тренировке."
-        return (f'Тип тренировки: {self.training_type}; '
-                f'Длительность: {self.duration:.3f} ч.; '
-                f'Дистанция: {self.distance:.3f} км; '
-                f'Ср. скорость: {self.speed:.3f} км/ч; '
-                f'Потрачено ккал: {self.calories:.3f}.')
+        return self.MESSAGE.format(self.training_type,
+                                   self.duration,
+                                   self.distance,
+                                   self.speed,
+                                   self.calories)
 
 
 class Training:
@@ -131,13 +133,15 @@ class Swimming(Training):
                 * self.COEFFICIENT_2 * self.weight * self.duration)
 
 
-def read_package(workout_type: str, data: list[int]) -> Training:
+def read_package(workout_type: str, data: list[int]) -> Training | str:
     """Прочитать данные полученные от датчиков."""
     training_classes: dict[str: Training] = {
         'SWM': Swimming,
         'RUN': Running,
         'WLK': SportsWalking
     }
+    if workout_type not in training_classes:
+        return "Неизвестный вид тренировки"
     return training_classes[workout_type](*data)
 
 
